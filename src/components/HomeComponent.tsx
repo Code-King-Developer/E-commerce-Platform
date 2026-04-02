@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 
 export function HomeComponent() {
   return (
@@ -71,14 +72,14 @@ export function HomeComponent() {
             <h2 className="text-5xl md:text-6xl font-manrope font-black tracking-tighter text-primary mt-4">Trending Pieces</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="group">
+            <Link to="/product/$productId" params={{ productId: '1' }} className="group block cursor-pointer">
               <div className="aspect-[3/4] bg-[var(--color-surface-container-lowest)] overflow-hidden mb-6 relative">
                 <img alt="Product 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4_tqmFNA5Jsljd2hyK1vqkRCpcKepft4wSexYmrp_3IePyY1OEcgYNjbTjb28vWTt7ZTKQxQwUd3n4BM_yIKuU8MmqUXeiKE1hyehDPlchveQe0IxQjNSrU8mRFUMCQZVRsAgilFCCIxUCWrSTmInFGT3sQHbPunJRFyAy44wNrlUPPDxKtg3P4KuR_ocLEjAapocw3OTDFarN-sBjKLejwOhgCIC6qQKSG3r7KEPoqJg7pbkCy9oh4u5L6wpuKXZiB1pEMltqV7N" />
                 <button className="absolute top-6 right-6 w-12 h-12 bg-white flex items-center justify-center rounded-full opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-sm">
                   <span className="material-symbols-outlined text-primary">favorite</span>
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-primary">
-                  <button className="w-full text-white font-bold text-xs tracking-widest uppercase py-3">Add to Bag</button>
+                  <div className="w-full text-center text-white font-bold text-xs tracking-widest uppercase py-3">View Details</div>
                 </div>
               </div>
               <div className="flex justify-between items-start">
@@ -88,14 +89,14 @@ export function HomeComponent() {
                 </div>
                 <span className="text-xl font-manrope font-black">$240</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group">
+            <Link to="/product/$productId" params={{ productId: '2' }} className="group block cursor-pointer">
               <div className="aspect-[3/4] bg-[var(--color-surface-container-lowest)] overflow-hidden mb-6 relative">
                 <div className="absolute top-6 left-6 z-10 bg-[var(--color-status-error)] text-white text-[10px] px-3 py-1 font-bold tracking-widest uppercase">Only 2 Left</div>
                 <img alt="Product 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCvmeYPk2BvyCkWO-sMzX35j6qsKqt4R4qFYySVXnwU4nO2t19FrJdej716YVZQZ776Ah1zAnoXHJHboUvM6EeCSUtFDE9TcVNSChMe3_JG0SsrejosLRrNXBFkm1D5A5WUcHH_fHYSxbQxyUEZ93y-gkp9HXLs14d-W2XtggDBTaKH4TN4sev6LAf72dmI1wAJ2HjHiFXLgjT0mRCLkaa66zEeOKIWoE7-0MqL0KCsPVu4TP0-hJHGrDPByuhpY2wR_xehgKgVitG" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-primary">
-                  <button className="w-full text-white font-bold text-xs tracking-widest uppercase py-3">Add to Bag</button>
+                  <div className="w-full text-center text-white font-bold text-xs tracking-widest uppercase py-3">View Details</div>
                 </div>
               </div>
               <div className="flex justify-between items-start">
@@ -105,16 +106,16 @@ export function HomeComponent() {
                 </div>
                 <span className="text-xl font-manrope font-black">$450</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group">
+            <Link to="/product/$productId" params={{ productId: '3' }} className="group block cursor-pointer">
               <div className="aspect-[3/4] bg-[var(--color-surface-container-lowest)] overflow-hidden mb-6 relative">
                 <img alt="Product 3" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApZwjjQ8ABV8Ami2FtQbUUAk0pfmuEjsk7UVA9LRZdBPC7zT7koJxp1no-5Hf1nBIjHx7M7AzPrXixb12LZPfjdgZ2_i_JtY6oQEtIVoL4mxAcSuhbhyL8r8z9CuaGJVD6inQStUZ39cUJvBHgj5MbuRfdINzgD1OUZHrPjms3SKZyTV5I118ioYn-ITEJzI5eHql8KtHFpWI3ACcFiJJ9_MwHDSS5A3yxJQcxsgYIo5acIkX3XWn8pbe3ac1SkIGz1HF_7bOH-H6O" />
                 <div className="absolute top-6 right-6 z-10 text-secondary">
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-primary">
-                  <button className="w-full text-white font-bold text-xs tracking-widest uppercase py-3">Add to Bag</button>
+                  <div className="w-full text-center text-white font-bold text-xs tracking-widest uppercase py-3">View Details</div>
                 </div>
               </div>
               <div className="flex justify-between items-start">
@@ -124,7 +125,7 @@ export function HomeComponent() {
                 </div>
                 <span className="text-xl font-manrope font-black">$890</span>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

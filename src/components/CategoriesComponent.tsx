@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
+import { PRODUCTS } from '../data/products';
 
 export function CategoriesComponent() {
   const [isInStock, setIsInStock] = useState(true);
@@ -8,80 +10,7 @@ export function CategoriesComponent() {
 
   const CATEGORIES = ['All Objects', 'Fashion', 'Objects', 'Electronics', 'Home & Furniture', 'Editorial', 'Archive', 'Art & Prints'];
 
-  const PRODUCTS = [
-    {
-      id: 1,
-      category: 'Objects',
-      title: 'KOBE SCULPTURAL VASE',
-      price: '$420.00',
-      tag: 'New Arrival',
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYbU7QO7ZzYDPoW76GOPED7yJtXUhe3G_BloUUilaKfwwrs8CACCBSPP0OXFwQY_XIN8gEP0wc67A-mXPl3BiZPMmSSrUz6ZG94FBoMWpB8Cmq3Q2CSvmG-MfpUfi05337KZuNrQyvJ2ulaH9JRr3i5ByA8EuuPQYtDh0Utm0UDECqW-E3hzuOAuRB747uO6ZXoH5owAAEA2PPw5Ah3Xfu6Nx_f7D8ayiBuiISuBq25TeYCv4g3qBhWdw1za4sVo9DAKjp1jwbW1U3",
-      alt: "Minimalist sculptural ceramic vessel"
-    },
-    {
-      id: 2,
-      category: 'Electronics',
-      title: 'MONOLITH CHRONO',
-      price: '$1,250.00',
-      tag: null,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB9YqeWnDSxbSr1PCqbAL2rFuvZ85yMV9C5WPDAn6wp_jd7TeKRROmKupLHXHDR64Hr6zMlXyLtmZDhv7hMCA8gDDFLNiNcorbxUA6u1u2001_FS01ZABN1bnuY0QUTFlC4jCEd9o12afpq2OYj14ZRyXHnt35D6aLe5VdfOBUfVeIwTQ0hIjqPJ24DQT1fH2we82y4t_qwt35GLL0EVplr84SavzqXfRkD8kz1_u3STrwX0SmACVFUuFLo6jg9FNW7QHSmDcfZFtda",
-      alt: "High-end minimal white watch"
-    },
-    {
-      id: 3,
-      category: 'Objects',
-      title: 'ATELIER CHAIR',
-      price: '$890.00',
-      tag: null,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBvKHAILcYj1I1meFhshKaNhV8OrwvaSDnpAQKDB4VzldhIHiV-cc8Cr5_Xl83qFeUAwnZiTs5Ucbx8_3F0Z3-rEI2xFtS8saGyr8LmarLjcFvdCB_Ao8LMwBED5mKDM7t990FNZ97_51DX3d2iM9voLpdT73NXnMzSuOTTKpJi_GFD1DtfSCnhv_tvMMEb5QZtNf3nECnHp_3IKPr4W8fpR-QM42jbFk-ETs5TJTlrdNiAewB9G1SLK19KyY2NgeoFlE_toFQVQLIk",
-      alt: "Modern black sculptural chair"
-    },
-    {
-      id: 4,
-      category: 'Electronics',
-      title: 'SONIC ARCHIVE 01',
-      price: '$550.00',
-      tag: null,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBNAYzPI4sFmo97WCgzElhWKd5YKgsT76Oc2UFLOAjS78iAJSaVdNnrjLtfJ9I-f1WP83ztothNA7RWmBLnklTV_xoQoDoPNmtDjE9yiWKiJV9farzoRSUncWl_CJcGWvXzN5Be2ighzSOoXz5IYof_QfOen3Er-PyPte-C28Vai50YUQ1Igt1T5RC7T70RSw5N7kWhiB3SbSA1Cskpa1iaaKDv289NknRiwab2ArkfcWODcQzoWSzM_2xtfkE0gBTzRadLS6p9yjnU",
-      alt: "Studio shot of professional studio headphones"
-    },
-    {
-      id: 5,
-      category: 'Fashion',
-      title: 'SILK TRENCH',
-      price: '$1,850.00',
-      tag: 'Limited Edition',
-      image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&q=80&fit=crop",
-      alt: "Minimalist fashion shot of a trench coat"
-    },
-    {
-      id: 6,
-      category: 'Home & Furniture',
-      title: 'LUMINA FLOOR LAMP',
-      price: '$920.00',
-      tag: null,
-      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&q=80&fit=crop",
-      alt: "Modern floor lamp"
-    },
-    {
-      id: 7,
-      category: 'Objects',
-      title: 'BRASS TRAY',
-      price: '$120.00',
-      tag: null,
-      image: "https://images.unsplash.com/photo-1611076045377-5080f5d4bf59?w=800&q=80&fit=crop",
-      alt: "Minimalist brass tray"
-    },
-    {
-      id: 8,
-      category: 'Art & Prints',
-      title: 'NEUTRAL ABSTRACT 02',
-      price: '$3,400.00',
-      tag: null,
-      image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&q=80&fit=crop",
-      alt: "Abstract canvas art"
-    }
-  ];
+
 
   const getLayoutClasses = (index: number) => {
     const mod = index % 4;
@@ -202,7 +131,7 @@ export function CategoriesComponent() {
               const mod = index % 4;
 
               return (
-                <div key={product.id} className={`${layout.col} group cursor-pointer ${layout.wrapper}`}>
+                <Link to="/product/$productId" params={{ productId: product.id.toString() }} key={product.id} className={`${layout.col} group cursor-pointer block ${layout.wrapper}`}>
                   <div className={`${layout.aspect} bg-surface-container-lowest overflow-hidden relative mb-6`}>
                     <img 
                       alt={product.title} 
@@ -235,7 +164,7 @@ export function CategoriesComponent() {
                       </div>
                     </div>
                   )}
-                </div>
+                </Link>
               );
             })}
           </div>

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from '@tanstack/react-router';
 
 export function CollectionsComponent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -84,7 +85,7 @@ export function CollectionsComponent() {
       {/* Asymmetric Category Grid */}
       <section className="grid grid-cols-12 gap-5">
         {/* Category: Electronics (Large Spotlight) */}
-        <div className="col-span-12 md:col-span-8 group cursor-pointer">
+        <Link to="/product/$productId" params={{ productId: 'electonics' }} className="col-span-12 md:col-span-8 group cursor-pointer block">
           <div className="relative aspect-video overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -98,12 +99,12 @@ export function CollectionsComponent() {
               <span className="font-label text-xs tracking-widest uppercase text-on-surface-variant mb-2 block">01 / Innovation</span>
               <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Electronics</h2>
             </div>
-            <span className="material-symbols-outlined text-4xl font-light">north_east</span>
+            <span className="material-symbols-outlined text-4xl font-light group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform">north_east</span>
           </div>
-        </div>
+        </Link>
 
         {/* Category: Fashion (Vertical Impact) */}
-        <div className="col-span-12 md:col-span-4 group cursor-pointer mt-12 md:mt-24">
+        <Link to="/product/$productId" params={{ productId: 'fashion' }} className="col-span-12 md:col-span-4 group cursor-pointer mt-12 md:mt-24 block">
           <div className="relative aspect-3/4 overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -115,10 +116,10 @@ export function CollectionsComponent() {
             <span className="font-label text-xs tracking-widest uppercase text-on-surface-variant mb-2 block">02 / Silhouettes</span>
             <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Fashion</h2>
           </div>
-        </div>
+        </Link>
 
         {/* Category: Objects (Standard Modern) */}
-        <div className="col-span-12 md:col-span-4 group cursor-pointer mt-12">
+        <Link to="/product/$productId" params={{ productId: 'objects' }} className="col-span-12 md:col-span-4 group cursor-pointer mt-12 block">
           <div className="relative aspect-square overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -130,10 +131,10 @@ export function CollectionsComponent() {
             <span className="font-label text-xs tracking-widest uppercase text-on-surface-variant mb-2 block">03 / Form</span>
             <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Objects</h2>
           </div>
-        </div>
+        </Link>
 
         {/* Category: Home (Large Inset) */}
-        <div className="col-span-12 md:col-span-8 group cursor-pointer md:-mt-24">
+        <Link to="/product/$productId" params={{ productId: 'home' }} className="col-span-12 md:col-span-8 group cursor-pointer md:-mt-24 block">
           <div className="relative aspect-16/10 overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -146,12 +147,12 @@ export function CollectionsComponent() {
               <span className="font-label text-xs tracking-widest uppercase text-on-surface-variant mb-2 block">04 / Environment</span>
               <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Home</h2>
             </div>
-            <span className="material-symbols-outlined text-4xl font-light">north_east</span>
+            <span className="material-symbols-outlined text-4xl font-light group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform">north_east</span>
           </div>
-        </div>
+        </Link>
 
         {/* Category: Editorial & Archive (Split) */}
-        <div className="col-span-12 md:col-span-6 group cursor-pointer mt-12">
+        <Link to="/product/$productId" params={{ productId: 'editorial' }} className="col-span-12 md:col-span-6 group cursor-pointer mt-12 block">
           <div className="relative aspect-4/3 overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -165,9 +166,9 @@ export function CollectionsComponent() {
               <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Editorial</h2>
             </div>
           </div>
-        </div>
+        </Link>
 
-        <div className="col-span-12 md:col-span-6 group cursor-pointer mt-12 md:mt-32">
+        <Link to="/product/$productId" params={{ productId: 'archive' }} className="col-span-12 md:col-span-6 group cursor-pointer mt-12 md:mt-32 block">
           <div className="relative aspect-4/3 overflow-hidden bg-surface-container-low mb-6">
             <img 
               className="object-cover w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02]" 
@@ -181,7 +182,7 @@ export function CollectionsComponent() {
               <h2 className="font-headline font-bold text-4xl tracking-tight text-primary">Archive</h2>
             </div>
           </div>
-        </div>
+        </Link>
       </section>
 
       {/* Newsletter Section */}
