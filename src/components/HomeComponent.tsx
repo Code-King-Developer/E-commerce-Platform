@@ -1,3 +1,4 @@
+
 export function HomeComponent() {
   return (
     <div className="space-y-20 md:space-y-40 pb-40">

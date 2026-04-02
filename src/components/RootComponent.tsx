@@ -29,17 +29,16 @@ export function RootComponent() {
       <header className={`bg-white fixed top-0 w-full z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="flex justify-between items-center w-full px-6 py-6 md:py-8 max-w-screen-2xl mx-auto font-manrope tracking-tight">
           <div className="text-2xl font-black tracking-tighter text-primary uppercase">
-            <Link to="/">THE DIGITAL CURATOR</Link>
+            <Link to="/" activeProps={{ className: "text-primary opacity-100" }} activeOptions={{ exact: true }}>THE DIGITAL CURATOR</Link>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Shop</Link>
-            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Categories</Link>
-            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Editorial</Link>
+            <Link to="/" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Shop</Link>
+            <Link to="/categories" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Categories</Link>
+            <Link to="/" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Editorial</Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link to="/login" className="material-symbols-outlined scale-95 active:duration-150 ">person</Link>
+            <Link to="/login" activeProps={{ className: "text-primary opacity-100 font-bold" }} className="material-symbols-outlined scale-95 active:duration-150 ">person</Link>
             <button className="material-symbols-outlined scale-95 active:duration-150">shopping_bag</button>
-            <button className="material-symbols-outlined text-primary hover:opacity-70 transition-opacity duration-300">help_outline</button>
           </div>
         </div>
       </header>
