@@ -4,6 +4,8 @@ import { HomeComponent } from './components/HomeComponent'
 import { LoginComponent } from './components/LoginComponent'
 import { SignupComponent } from './components/SignupComponent'
 import { CategoriesComponent } from './components/CategoriesComponent'
+import { EditorialComponent } from './components/EditorialComponent'
+import { CollectionsComponent } from './components/CollectionsComponent'
 
 export const rootRoute = createRootRoute({
   component: RootComponent,
@@ -33,7 +35,19 @@ export const categoriesRoute = createRoute({
   component: CategoriesComponent,
 })
 
-export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute])
+export const editorialRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/editorial',
+  component: EditorialComponent,
+})
+
+export const collectionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/collections',
+  component: CollectionsComponent,
+})
+
+export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute])
 export const router = createRouter({ routeTree })
 
 declare module '@tanstack/react-router' {
