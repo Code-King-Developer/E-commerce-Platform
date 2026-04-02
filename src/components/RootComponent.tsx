@@ -8,7 +8,7 @@ export function RootComponent() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
         // Scrolling down past 80px: hide navbar
         setIsVisible(false);
@@ -16,10 +16,10 @@ export function RootComponent() {
         // Scrolling up: show navbar
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
@@ -32,11 +32,13 @@ export function RootComponent() {
             <Link to="/">THE DIGITAL CURATOR</Link>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">EXPLORE</Link>
-            <a href="#" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">ARCHIVE</a>
-            <Link to="/login" className="text-primary font-bold">SIGN IN</Link>
+            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Shop</Link>
+            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Categories</Link>
+            <Link to="/" className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Editorial</Link>
           </nav>
           <div className="flex items-center gap-4">
+            <Link to="/login" className="material-symbols-outlined scale-95 active:duration-150 ">person</Link>
+            <button className="material-symbols-outlined scale-95 active:duration-150">shopping_bag</button>
             <button className="material-symbols-outlined text-primary hover:opacity-70 transition-opacity duration-300">help_outline</button>
           </div>
         </div>
