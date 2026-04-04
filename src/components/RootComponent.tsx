@@ -1,8 +1,9 @@
-import { Outlet, Link } from '@tanstack/react-router'
+import { Outlet, Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function RootComponent() {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -58,15 +59,27 @@ export function RootComponent() {
                   <Link to="/" activeProps={{ className: "text-primary opacity-100" }} activeOptions={{ exact: true }}>THE DIGITAL CURATOR</Link>
                 </div>
                 <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-                  <Link to="/" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Shop</Link>
-                  <Link to="/categories" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Categories</Link>
-                  <Link to="/collections" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Collections</Link>
-                  <Link to="/editorial" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300">Editorial</Link>
+                  <Link to="/" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">home</span>
+                    Home
+                  </Link>
+                  <Link to="/categories" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">storefront</span>
+                    Shop
+                  </Link>
+                  <Link to="/collections" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">category</span>
+                    Collections
+                  </Link>
+                  <Link to="/editorial" activeProps={{ className: "text-primary font-bold opacity-100 border-b-2 border-primary pb-1" }} activeOptions={{ exact: true }} className="text-on-surface-variant hover:opacity-70 transition-opacity duration-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">auto_stories</span>
+                    Editorial
+                  </Link>
                 </nav>
                 <div className="flex items-center gap-4">
                   <button onClick={() => setIsSearchActive(true)} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">search</button>
-                  <Link to="/login" activeProps={{ className: "text-primary opacity-100 font-bold" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">person</Link>
-                  <button className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">shopping_bag</button>
+                  <Link to="/profile" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">person</Link>
+                  <Link to="/cart" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">shopping_bag</Link>
                 </div>
               </motion.div>
             ) : (
@@ -117,8 +130,18 @@ export function RootComponent() {
         </div>
       </header>
 
-      <main className="flex-grow grow flex items-center justify-center pt-32 pb-20 px-6 w-full">
-        <Outlet />
+      <main className="flex-grow grow flex items-start justify-center pt-32 pb-20 px-6 w-full">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="w-full flex justify-center"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <footer className="bg-white mt-auto">

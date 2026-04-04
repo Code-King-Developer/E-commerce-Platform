@@ -1,31 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
 
 export function CollectionsComponent() {
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState('All');
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsFilterOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const FILTER_OPTIONS = [
-    { name: 'All', icon: 'grid_view' },
-    { name: 'Electronics', icon: 'headphones' },
-    { name: 'Fashion', icon: 'checkroom' },
-    { name: 'Objects', icon: 'category' },
-    { name: 'Home', icon: 'chair' },
-    { name: 'Editorial', icon: 'auto_stories' },
-    { name: 'Archive', icon: 'inventory_2' }
-  ];
   return (
     <div className="w-full max-w-screen-2xl mx-auto">
       {/* Hero Title Section */}
@@ -38,47 +13,6 @@ export function CollectionsComponent() {
           <p className="max-w-xl text-on-surface-variant text-lg leading-relaxed">
             A rigorous selection of modern artifacts, spanning from essential electronics to archival fashion. Each category is a curated ecosystem of design excellence.
           </p>
-          <div className="flex items-center gap-4 relative" ref={dropdownRef}>
-            <button 
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="text-xs font-bold tracking-widest uppercase py-2 px-4 bg-surface-container-low flex items-center gap-2 hover:bg-surface-container-high transition-colors cursor-pointer"
-            >
-              Filter: {selectedFilter}
-              <motion.span 
-                animate={{ rotate: isFilterOpen ? 180 : 0 }} 
-                transition={{ duration: 0.2 }}
-                className="material-symbols-outlined text-[16px]"
-              >
-                expand_more
-              </motion.span>
-            </button>
-
-            <AnimatePresence>
-              {isFilterOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full right-0 mt-2 w-48 bg-white border border-outline-variant/20 shadow-lg z-20 flex flex-col origin-top"
-                >
-                  {FILTER_OPTIONS.map((option) => (
-                    <button
-                      key={option.name}
-                      onClick={() => {
-                        setSelectedFilter(option.name);
-                        setIsFilterOpen(false);
-                      }}
-                      className={`text-left text-[10px] flex items-center gap-3 font-bold tracking-widest uppercase py-3 px-4 hover:bg-surface-container-low transition-colors ${selectedFilter === option.name ? 'text-primary bg-surface-container-low/50' : 'text-on-surface-variant'}`}
-                    >
-                      <span className="material-symbols-outlined text-[16px] opacity-70">{option.icon}</span>
-                      {option.name}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
         </div>
       </section>
 

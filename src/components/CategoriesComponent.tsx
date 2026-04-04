@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
 import { PRODUCTS } from '../data/products';
 
@@ -7,10 +8,28 @@ export function CategoriesComponent() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(2500);
   const [selectedCategory, setSelectedCategory] = useState('All Objects');
+  const [selectedSort, setSelectedSort] = useState('Recommended');
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+        setIsSortOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const CATEGORIES = ['All Objects', 'Fashion', 'Objects', 'Electronics', 'Home & Furniture', 'Editorial', 'Archive', 'Art & Prints'];
 
-
+  const SORT_OPTIONS = [
+    { name: 'Recommended', icon: 'star' },
+    { name: 'Newest', icon: 'schedule' },
+    { name: 'Price: Low to High', icon: 'arrow_upward' },
+    { name: 'Price: High to Low', icon: 'arrow_downward' }
+  ];
 
   const getLayoutClasses = (index: number) => {
     const mod = index % 4;
@@ -27,13 +46,56 @@ export function CategoriesComponent() {
   return (
     <div className="w-full">
       {/* Hero Title */}
-      <section className="px-6 lg:px-12 mb-16 max-w-screen-2xl mx-auto">
-        <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-extrabold tracking-tighter leading-none mb-4">
-          THE MODERN <span className="text-secondary">ARCHIVE</span>
-        </h1>
-        <p className="max-w-md text-on-surface-variant font-body leading-relaxed">
-          A rigorous selection of sculptural forms and essential technology, curated for the discerning digital citizen.
-        </p>
+      <section className="px-6 lg:px-12 mb-16 max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8 z-20 relative">
+        <div>
+          <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-extrabold tracking-tighter leading-none mb-4">
+            THE MODERN <span className="text-secondary">ARCHIVE</span>
+          </h1>
+          <p className="max-w-md text-on-surface-variant font-body leading-relaxed">
+            A rigorous selection of sculptural forms and essential technology, curated for the discerning digital citizen.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 relative shrink-0" ref={sortDropdownRef}>
+          <button 
+            onClick={() => setIsSortOpen(!isSortOpen)}
+            className="text-[10px] font-bold tracking-[0.2em] uppercase py-3 px-6 bg-surface-container-low flex items-center gap-2 hover:bg-surface-container-high transition-colors cursor-pointer"
+          >
+            Sort: {selectedSort}
+            <motion.span 
+              animate={{ rotate: isSortOpen ? 180 : 0 }} 
+              transition={{ duration: 0.2 }}
+              className="material-symbols-outlined text-[16px]"
+            >
+              expand_more
+            </motion.span>
+          </button>
+
+          <AnimatePresence>
+            {isSortOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-full right-0 mt-2 w-56 bg-white border border-outline-variant/20 shadow-2xl z-50 flex flex-col origin-top"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <button
+                    key={option.name}
+                    onClick={() => {
+                      setSelectedSort(option.name);
+                      setIsSortOpen(false);
+                    }}
+                    className={`text-left text-[10px] flex items-center gap-3 font-bold tracking-widest uppercase py-4 px-5 hover:bg-surface-container-low transition-colors ${selectedSort === option.name ? 'text-primary bg-surface-container-low/50' : 'text-on-surface-variant'}`}
+                  >
+                    <span className="material-symbols-outlined text-[16px] opacity-70">{option.icon}</span>
+                    {option.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </section>
 
       {/* Filter & Grid Container */}
