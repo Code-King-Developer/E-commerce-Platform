@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
+import { createRootRouteWithContext, createRoute, createRouter, redirect } from '@tanstack/react-router'
 import { RootComponent } from './components/RootComponent'
 import { HomeComponent } from './components/HomeComponent'
 import { LoginComponent } from './components/LoginComponent'
@@ -13,7 +13,11 @@ import { UserWishlistComponent } from './components/UserWishlistComponent'
 import { UserSettingsComponent } from './components/UserSettingsComponent'
 import { ShoppingCartComponent } from './components/ShoppingCartComponent'
 import { TrackShipmentComponent } from './components/TrackShipmentComponent'
-export const rootRoute = createRootRoute({
+export interface MyRouterContext {
+  isAuthenticated: boolean;
+}
+
+export const rootRoute = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
 })
 
@@ -27,12 +31,26 @@ export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginComponent,
+  beforeLoad: ({ context }) => {
+    if (context.isAuthenticated) {
+      throw redirect({
+        to: '/',
+      })
+    }
+  },
 })
 
 export const signupRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/signup',
   component: SignupComponent,
+  beforeLoad: ({ context }) => {
+    if (context.isAuthenticated) {
+      throw redirect({
+        to: '/',
+      })
+    }
+  },
 })
 
 export const categoriesRoute = createRoute({
@@ -63,40 +81,105 @@ export const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile',
   component: UserProfileComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const ordersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile/orders',
   component: UserOrdersComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const wishlistRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile/wishlist',
   component: UserWishlistComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile/settings',
   component: UserSettingsComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const cartRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/cart',
   component: ShoppingCartComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const trackRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/track',
   component: TrackShipmentComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, settingsRoute, cartRoute, trackRoute])
-export const router = createRouter({ routeTree })
+export const router = createRouter({ 
+  routeTree,
+  context: {
+    isAuthenticated: false,
+  },
+})
 
 declare module '@tanstack/react-router' {
   interface Register {

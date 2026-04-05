@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { OTPInput } from './OTPInput';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 export function LoginComponent() {
+  const navigate = useNavigate();
+  const { sendOtp, verifyOtp, isSendingOtp } = useAuthContext();
+  const [email, setEmail] = useState('');
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
   const [method, setMethod] = useState<'email' | 'phone'>('email');
 
@@ -26,7 +30,16 @@ export function LoginComponent() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             className="space-y-10"
-            onSubmit={(e) => { e.preventDefault(); setStep('otp'); }}
+            onSubmit={async (e) => { 
+                e.preventDefault(); 
+                try {
+                    await sendOtp({ email });
+                    setStep('otp'); 
+                } catch (err) {
+                    console.error('Failed to send OTP', err);
+                    alert('Failed to send OTP. Please try again.');
+                }
+            }}
           >
             <div className="space-y-6">
               <div className="flex gap-4 mb-4">
@@ -37,7 +50,14 @@ export function LoginComponent() {
               <div className="group">
                 <label className="block font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-2">{method === 'email' ? 'Email Address' : 'Phone Number'}</label>
                 <div className="ghost-border transition-all duration-300">
-                  <input type={method === 'email' ? 'email' : 'tel'} required className="w-full bg-transparent border-none px-0 py-3 text-primary placeholder:text-outline focus:ring-0 focus:outline-none font-body text-sm" placeholder={method === 'email' ? 'name@domain.com' : '+1 (555) 000-0000'} />
+                  <input 
+                    type={method === 'email' ? 'email' : 'tel'} 
+                    required 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-transparent border-none px-0 py-3 text-primary placeholder:text-outline focus:ring-0 focus:outline-none font-body text-sm" 
+                    placeholder={method === 'email' ? 'name@domain.com' : '+1 (555) 000-0000'} 
+                  />
                 </div>
               </div>
 
@@ -52,8 +72,12 @@ export function LoginComponent() {
               </div>
             </div>
 
-            <button className="w-full bg-primary text-on-primary font-headline font-bold py-5 tracking-widest text-xs uppercase hover:opacity-90 active:scale-[0.98] transition-all" type="submit">
-              Sign In
+            <button 
+              className="w-full bg-primary text-on-primary font-headline font-bold py-5 tracking-widest text-xs uppercase hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50" 
+              type="submit"
+              disabled={isSendingOtp}
+            >
+              {isSendingOtp ? 'Sending...' : 'Sign In'}
             </button>
 
             <div className="relative flex items-center py-4">
@@ -63,7 +87,11 @@ export function LoginComponent() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-3 border border-outline-variant border-opacity-30 py-4 px-6 hover:bg-surface-container-low transition-colors active:scale-[0.98]" type="button">
+              <button 
+                className="flex items-center justify-center gap-3 border border-outline-variant border-opacity-30 py-4 px-6 hover:bg-surface-container-low transition-colors active:scale-[0.98]" 
+                type="button"
+                onClick={() => window.location.href = 'http://localhost:8000/api/auth/google'}
+              >
                 <span className="material-symbols-outlined text-sm">globe</span>
                 <span className="font-label text-[10px] uppercase tracking-widest font-bold">Google</span>
               </button>
@@ -95,7 +123,15 @@ export function LoginComponent() {
             </div>
             
             <div className="flex justify-center mt-4 mb-4">
-              <OTPInput onComplete={(code) => alert(`Verified with code ${code}! Logging in successfully!`)} />
+              <OTPInput onComplete={async (code) => {
+                try {
+                  await verifyOtp({ email, otp: code });
+                  navigate({ to: '/' });
+                } catch (err) {
+                  console.error('Verification failed', err);
+                  alert('Verification failed. Invalid OTP.');
+                }
+              }} />
             </div>
 
             <div className="text-center mt-6">
