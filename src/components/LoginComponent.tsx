@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { OTPInput } from './OTPInput';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { toast } from 'sonner';
 
 export function LoginComponent() {
   const navigate = useNavigate();
-  const { sendOtp, verifyOtp, isSendingOtp } = useAuthContext();
+  const { sendOtp, verifyOtp, refetchUser, isSendingOtp } = useAuthContext();
   const [email, setEmail] = useState('');
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
   const [method, setMethod] = useState<'email' | 'phone'>('email');
@@ -37,7 +38,7 @@ export function LoginComponent() {
                     setStep('otp'); 
                 } catch (err) {
                     console.error('Failed to send OTP', err);
-                    alert('Failed to send OTP. Please try again.');
+                    toast.error('Failed to send OTP. Please try again.');
                 }
             }}
           >
@@ -115,7 +116,7 @@ export function LoginComponent() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             className="space-y-10"
-            onSubmit={(e) => { e.preventDefault(); alert('Logged in successfully!'); }}
+            onSubmit={(e) => { e.preventDefault(); toast.success('Logged in successfully!'); }}
           >
             <div className="text-center mb-6">
               <h2 className="text-2xl font-headline font-bold mb-2">Verify {method === 'email' ? 'Email' : 'Phone'}</h2>
@@ -125,11 +126,13 @@ export function LoginComponent() {
             <div className="flex justify-center mt-4 mb-4">
               <OTPInput onComplete={async (code) => {
                 try {
-                  await verifyOtp({ email, otp: code });
+                  await verifyOtp({ email, code });
+                  await refetchUser();
+                  toast.success('Authentication successful');
                   navigate({ to: '/' });
                 } catch (err) {
                   console.error('Verification failed', err);
-                  alert('Verification failed. Invalid OTP.');
+                  toast.error('Verification failed. Invalid OTP.');
                 }
               }} />
             </div>

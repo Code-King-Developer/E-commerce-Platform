@@ -16,6 +16,7 @@ export const useAuth = () => {
     queryFn: authApi.getProfile,
     retry: false, // Don't retry auth profile on failure
     staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false, // Prevent resets on switching tabs/windows
   });
 
   // Login (send OTP) mutation

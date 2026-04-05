@@ -27,5 +27,8 @@ export interface SendOtpPayload {
 
 export interface VerifyOtpPayload {
   email: string;
-  otp: string;
+  code: string;
+  name?: string;
+  biography?: string;
+  password?: string;
 }

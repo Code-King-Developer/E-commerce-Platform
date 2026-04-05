@@ -1,20 +1,20 @@
 import { createContext } from 'react';
-import type { User, AuthResponse, UpdateProfilePayload } from '../types/auth';
+import type { User, AuthResponse, UpdateProfilePayload, SendOtpPayload, VerifyOtpPayload } from '../types/auth';
 
 export interface AuthContextType {
   user: User | null | undefined;
   isLoading: boolean;
   isAuthenticated: boolean;
   error: Error | null;
-  sendOtp: (payload: { email: string }) => Promise<AuthResponse>;
+  sendOtp: (payload: SendOtpPayload) => Promise<AuthResponse>;
   isSendingOtp: boolean;
-  verifyOtp: (payload: { email: string; otp: string }) => Promise<AuthResponse>;
+  verifyOtp: (payload: VerifyOtpPayload) => Promise<AuthResponse>;
   isVerifyingOtp: boolean;
   updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
   isUpdatingProfile: boolean;
   logout: () => Promise<void>;
   isLoggingOut: boolean;
-  refetchUser: () => void;
+  refetchUser: () => Promise<any>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

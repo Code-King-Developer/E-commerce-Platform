@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { SideNavBarComponent } from './SideNavBarComponent';
 
 export function UserSettingsComponent() {
+  const { user, updateProfile, isUpdatingProfile } = useAuthContext();
   const [notifications, setNotifications] = useState({
     newCollectionDrops: true,
     weeklyDigest: false,
@@ -10,9 +12,38 @@ export function UserSettingsComponent() {
   });
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
+  // Local form state for the update modal
+  const [formData, setFormData] = useState({
+    name: '',
+    biography: '',
+  });
+
   const toggleNotification = (key: keyof typeof notifications) => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateProfile({
+        name: formData.name,
+        biography: formData.biography,
+      });
+      setIsUpdateModalOpen(false);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh] w-full">
+        <div className="font-headline text-primary animate-pulse tracking-widest text-xs uppercase">
+          Fetching your profile...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex max-w-screen-2xl w-full md:-mt-10 lg:-mx-12">
@@ -45,21 +76,31 @@ export function UserSettingsComponent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
-                  <p className="text-sm font-medium text-primary py-2 border-b border-transparent">Alexander Sterling</p>
+                  <p className="text-sm font-medium text-primary py-2 border-b border-transparent">{user.name}</p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Email Address</label>
-                  <p className="text-sm font-medium text-primary py-2 border-b border-transparent">sterling@curator.digital</p>
+                  <p className="text-sm font-medium text-primary py-2 border-b border-transparent">{user.email}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Biography</label>
-                <p className="text-sm font-medium text-primary py-2 leading-relaxed border-b border-transparent">Collector of modern mid-century artifacts and high-performance minimalist tech.</p>
+                <p className="text-sm font-medium text-primary py-2 leading-relaxed border-b border-transparent">
+                  {user.biography || "No biography provided. Click Edit Profile to add one."}
+                </p>
               </div>
               <div className="flex justify-start pt-4">
                 <button
                   className="bg-primary text-on-primary px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-all border border-transparent"
-                  onClick={() => setIsUpdateModalOpen(true)}
+                  onClick={() => {
+                    if (user) {
+                      setFormData({
+                        name: user.name || '',
+                        biography: user.biography || '',
+                      });
+                    }
+                    setIsUpdateModalOpen(true);
+                  }}
                 >
                   Edit Profile
                 </button>
@@ -119,7 +160,7 @@ export function UserSettingsComponent() {
             <div className="md:col-span-8">
               <div className="space-y-8">
                 <div className={`flex items-start gap-6 cursor-pointer transition-opacity ${notifications.newCollectionDrops ? '' : 'opacity-80 hover:opacity-100 group'}`} onClick={() => toggleNotification('newCollectionDrops')}>
-                  <div className={`w-5 h-5 border-2 flex-shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.newCollectionDrops ? 'border-primary' : 'border-outline-variant'}`}>
+                  <div className={`w-5 h-5 border-2 shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.newCollectionDrops ? 'border-primary' : 'border-outline-variant'}`}>
                     {notifications.newCollectionDrops && <div className="w-2.5 h-2.5 bg-primary"></div>}
                   </div>
                   <div>
@@ -128,7 +169,7 @@ export function UserSettingsComponent() {
                   </div>
                 </div>
                 <div className={`flex items-start gap-6 cursor-pointer transition-opacity ${notifications.weeklyDigest ? '' : 'opacity-80 hover:opacity-100 group'}`} onClick={() => toggleNotification('weeklyDigest')}>
-                  <div className={`w-5 h-5 border-2 flex-shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.weeklyDigest ? 'border-primary' : 'border-outline-variant'}`}>
+                  <div className={`w-5 h-5 border-2 shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.weeklyDigest ? 'border-primary' : 'border-outline-variant'}`}>
                     {notifications.weeklyDigest && <div className="w-2.5 h-2.5 bg-primary"></div>}
                   </div>
                   <div>
@@ -137,7 +178,7 @@ export function UserSettingsComponent() {
                   </div>
                 </div>
                 <div className={`flex items-start gap-6 cursor-pointer transition-opacity ${notifications.orderStatusUpdates ? '' : 'opacity-80 hover:opacity-100 group'}`} onClick={() => toggleNotification('orderStatusUpdates')}>
-                  <div className={`w-5 h-5 border-2 flex-shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.orderStatusUpdates ? 'border-primary' : 'border-outline-variant'}`}>
+                  <div className={`w-5 h-5 border-2 shrink-0 flex items-center justify-center mt-1 transition-colors ${notifications.orderStatusUpdates ? 'border-primary' : 'border-outline-variant'}`}>
                     {notifications.orderStatusUpdates && <div className="w-2.5 h-2.5 bg-primary"></div>}
                   </div>
                   <div>
@@ -160,7 +201,7 @@ export function UserSettingsComponent() {
       </motion.div>
       <AnimatePresence>
         {isUpdateModalOpen && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -177,35 +218,62 @@ export function UserSettingsComponent() {
             >
               <h2 className="font-manrope text-2xl font-bold uppercase tracking-tight text-primary mb-6">Edit Profile</h2>
 
-              <div className="flex flex-col gap-6 mb-8">
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
-                  <input className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium transition-all text-primary" type="text" defaultValue="Alexander Sterling" />
+              <form onSubmit={handleUpdateProfile}>
+                <div className="flex flex-col gap-6 mb-8">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
+                    <input 
+                      className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium transition-all text-primary" 
+                      type="text" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Email Address</label>
+                    <input 
+                      className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium ml-0 opacity-50 cursor-not-allowed text-primary" 
+                      type="email" 
+                      value={user.email} 
+                      disabled 
+                    />
+                    <p className="text-[8px] text-on-surface-variant uppercase tracking-widest mt-1">Email address cannot be changed.</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Biography</label>
+                    <textarea 
+                      className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium transition-all resize-none text-primary" 
+                      rows={3} 
+                      value={formData.biography}
+                      onChange={(e) => setFormData({ ...formData, biography: e.target.value })}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Email Address</label>
-                  <input className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium transition-all text-primary" type="email" defaultValue="sterling@curator.digital" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Biography</label>
-                  <textarea className="bg-surface-container border-b border-outline-variant/20 focus:border-secondary focus:ring-0 px-4 py-3 text-sm font-medium transition-all resize-none text-primary" rows={3} defaultValue="Collector of modern mid-century artifacts and high-performance minimalist tech." />
-                </div>
-              </div>
 
-              <div className="flex flex-col gap-4">
-                <button
-                  className="bg-primary text-on-primary w-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
-                  onClick={() => setIsUpdateModalOpen(false)}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="border border-outline-variant text-primary w-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
-                  onClick={() => setIsUpdateModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
+                <div className="flex flex-col gap-4">
+                  <button
+                    type="submit"
+                    disabled={isUpdatingProfile}
+                    className="bg-primary text-on-primary w-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isUpdatingProfile ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Saving...
+                      </>
+                    ) : 'Save Changes'}
+                  </button>
+                  <button
+                    type="button"
+                    className="border border-outline-variant text-primary w-full py-4 text-xs font-bold uppercase tracking-widest hover:bg-surface-container transition-colors"
+                    onClick={() => setIsUpdateModalOpen(false)}
+                    disabled={isUpdatingProfile}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}

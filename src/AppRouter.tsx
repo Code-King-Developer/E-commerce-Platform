@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
 import { router } from './routes'
 import { useAuthContext } from './hooks/useAuthContext'
@@ -6,14 +6,9 @@ import { useAuthContext } from './hooks/useAuthContext'
 export function AppRouter() {
   const { isAuthenticated, isLoading } = useAuthContext();
 
-  // Update router context whenever auth state changes
-  useEffect(() => {
-    router.update({
-      context: {
-        isAuthenticated: !!isAuthenticated,
-      },
-    })
-  }, [isAuthenticated])
+  const context = useMemo(() => ({
+    isAuthenticated: !!isAuthenticated,
+  }), [isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -25,5 +20,5 @@ export function AppRouter() {
     );
   }
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} context={context} />;
 }

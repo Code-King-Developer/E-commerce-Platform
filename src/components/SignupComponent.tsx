@@ -1,10 +1,56 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { OTPInput } from './OTPInput';
+import { useAuthContext } from '../hooks/useAuthContext';
+import { toast } from 'sonner';
 
 export function SignupComponent() {
+  const navigate = useNavigate();
+  const { sendOtp, verifyOtp, refetchUser, isSendingOtp } = useAuthContext();
   const [step, setStep] = useState<'details' | 'otp'>('details');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await sendOtp({ email: formData.email });
+      setStep('otp');
+    } catch (err) {
+      console.error('Failed to send OTP:', err);
+      toast.error('Failed to send verification code. Please check your email and try again.');
+    }
+  };
+
+  const handleVerifyOtp = async (code: string) => {
+    try {
+      // 1. Verify the OTP and Register
+      if (formData.password !== formData.confirmPassword) {
+        toast.error('Passwords do not match');
+        return;
+      }
+      
+      await verifyOtp({ 
+        email: formData.email, 
+        code, 
+        name: formData.name,
+        password: formData.password 
+      });
+      
+      // 2. Refetch user data and Redirect
+      await refetchUser();
+      toast.success('Authentication successful');
+      navigate({ to: '/' });
+    } catch (err) {
+      console.error('Registration failed:', err);
+      toast.error('Verification failed. Invalid or expired code.');
+    }
+  };
 
   return (
     <div className="w-full flex-grow flex items-center justify-center">
@@ -41,41 +87,62 @@ export function SignupComponent() {
                 
                 <form 
                   className="space-y-6"
-                  onSubmit={(e) => { e.preventDefault(); setStep('otp'); }}
+                  onSubmit={handleSendOtp}
                 >
                   <div className="grid grid-cols-1 gap-6">
                     <div className="space-y-2 group">
                       <label className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant block font-label">Full Name</label>
                       <div className="ghost-border transition-all duration-300">
-                        <input className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" placeholder="ALEXANDER VOGUE" type="text" required />
+                        <input 
+                          className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" 
+                          placeholder="ALEXANDER VOGUE" 
+                          type="text" 
+                          required 
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        />
                       </div>
                     </div>
                     
                     <div className="space-y-2 group">
                       <label className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant block font-label">Email Address</label>
                       <div className="ghost-border transition-all duration-300">
-                        <input className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" placeholder="CURATOR@DIGITAL.COM" type="email" required />
+                        <input 
+                          className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" 
+                          placeholder="CURATOR@DIGITAL.COM" 
+                          type="email" 
+                          required 
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        />
                       </div>
                     </div>
 
-                    <div className="space-y-2 group">
-                      <label className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant block font-label">Phone Number</label>
-                      <div className="ghost-border transition-all duration-300">
-                        <input className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" placeholder="+1 (555) 000-0000" type="tel" required />
-                      </div>
-                    </div>
-                    
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-2 group">
                         <label className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant block font-label">Password</label>
                         <div className="ghost-border transition-all duration-300">
-                          <input className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" placeholder="••••••••" type="password" required />
+                          <input 
+                            className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" 
+                            placeholder="••••••••" 
+                            type="password" 
+                            required 
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          />
                         </div>
                       </div>
                       <div className="space-y-2 group">
                         <label className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant block font-label">Confirm Password</label>
                         <div className="ghost-border transition-all duration-300">
-                          <input className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" placeholder="••••••••" type="password" required />
+                          <input 
+                            className="w-full bg-transparent border-none focus:ring-0 py-4 px-0 placeholder:text-outline text-primary transition-all font-body text-sm outline-none" 
+                            placeholder="••••••••" 
+                            type="password" 
+                            required 
+                            value={formData.confirmPassword}
+                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                          />
                         </div>
                       </div>
                     </div>
@@ -88,8 +155,17 @@ export function SignupComponent() {
                     </label>
                   </div>
                   
-                  <button className="w-full bg-primary text-on-primary py-5 font-headline font-bold uppercase tracking-[0.2em] text-sm hover:opacity-90 transition-all active:scale-[0.98] mt-6" type="submit">
-                    Send OTP Verification
+                  <button 
+                    className="w-full bg-primary text-on-primary py-5 font-headline font-bold uppercase tracking-[0.2em] text-sm hover:opacity-90 transition-all active:scale-[0.98] mt-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3" 
+                    type="submit"
+                    disabled={isSendingOtp}
+                  >
+                    {isSendingOtp ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Sending...
+                      </>
+                    ) : 'Send OTP Verification'}
                   </button>
                 </form>
 
@@ -128,7 +204,7 @@ export function SignupComponent() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             className="w-full max-w-md space-y-10 bg-white p-8 md:p-12 shadow-xl border border-black/5"
-            onSubmit={(e) => { e.preventDefault(); alert('Account Verified & Created successfully!'); }}
+            onSubmit={(e) => { e.preventDefault(); toast.success('Account Verified & Created successfully!'); }}
           >
             <div className="text-center mb-6">
               <h2 className="text-3xl font-headline font-bold mb-3 text-primary tracking-tight">Verify Contact</h2>
@@ -136,7 +212,7 @@ export function SignupComponent() {
             </div>
             
             <div className="flex justify-center mt-8 mb-8">
-              <OTPInput onComplete={(code) => alert(`Verified with code ${code}! Account Created successfully!`)} />
+              <OTPInput onComplete={handleVerifyOtp} />
             </div>
 
             <div className="text-center mt-6">

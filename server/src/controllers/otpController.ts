@@ -35,7 +35,7 @@ export const sendOtp = async (req: Request, res: Response) => {
 // @route   POST /api/auth/verify-otp
 // @access  Public
 export const verifyOtp = async (req: Request, res: Response) => {
-  const { email, code, name, biography } = req.body;
+  const { email, code, name, biography, password } = req.body;
 
   try {
     // Get OTP from Redis
@@ -61,7 +61,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
         name,
         email,
         biography,
-        password: Math.random().toString(36).slice(-10), // Random placeholder password
+        password: password || Math.random().toString(36).slice(-10),
       });
     }
 
