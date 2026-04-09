@@ -1,5 +1,9 @@
 import axios from 'axios';
 import type { SendOtpPayload, VerifyOtpPayload, AuthResponse, User, UpdateProfilePayload } from '../types/auth';
+import type { Order } from '../types/order';
+import type { Product } from '../types/product';
+import type { Cart, AddToCartPayload, UpdateCartItemPayload } from '../types/cart';
+import type { Wishlist, AddToWishlistPayload } from '../types/wishlist';
 
 const api = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -32,6 +36,84 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     await api.post('/auth/logout');
+  },
+};
+
+export const orderApi = {
+  getMyOrders: async (): Promise<Order[]> => {
+    const { data } = await api.get<Order[]>('/orders/myorders');
+    return data;
+  },
+
+  getOrderDetails: async (id: string): Promise<Order> => {
+    const { data } = await api.get<Order>(`/orders/${id}`);
+    return data;
+  },
+};
+
+export const productApi = {
+  getProducts: async (category?: string): Promise<Product[]> => {
+    const url = category && category !== 'All Objects' ? `/products?category=${category}` : '/products';
+    const { data } = await api.get<Product[]>(url);
+    return data;
+  },
+
+  getProductById: async (id: string): Promise<Product> => {
+    const { data } = await api.get<Product>(`/products/${id}`);
+    return data;
+  },
+};
+
+export const cartApi = {
+  getCart: async (): Promise<Cart> => {
+    const { data } = await api.get<Cart>('/cart');
+    return data;
+  },
+
+  addToCart: async (payload: AddToCartPayload): Promise<Cart> => {
+    const { data } = await api.post<Cart>('/cart/add', payload);
+    return data;
+  },
+
+  updateCartItem: async (productId: string, payload: UpdateCartItemPayload): Promise<Cart> => {
+    const { data } = await api.put<Cart>(`/cart/update/${productId}`, payload);
+    return data;
+  },
+
+  removeFromCart: async (productId: string, size?: string, finish?: string): Promise<Cart> => {
+    let url = `/cart/remove/${productId}`;
+    const params = new URLSearchParams();
+    if (size) params.append('selectedSize', size);
+    if (finish) params.append('selectedFinish', finish);
+    if (params.toString()) url += `?${params.toString()}`;
+    
+    const { data } = await api.delete<Cart>(url);
+    return data;
+  },
+
+  clearCart: async (): Promise<void> => {
+    await api.delete('/cart/clear');
+  },
+};
+
+export const wishlistApi = {
+  getWishlist: async (): Promise<Wishlist> => {
+    const { data } = await api.get<Wishlist>('/wishlist');
+    return data;
+  },
+
+  addToWishlist: async (payload: AddToWishlistPayload): Promise<Wishlist> => {
+    const { data } = await api.post<Wishlist>('/wishlist/add', payload);
+    return data;
+  },
+
+  removeFromWishlist: async (productId: string): Promise<Wishlist> => {
+    const { data } = await api.delete<Wishlist>(`/wishlist/remove/${productId}`);
+    return data;
+  },
+
+  clearWishlist: async (): Promise<void> => {
+    await api.delete('/wishlist/clear');
   },
 };
 

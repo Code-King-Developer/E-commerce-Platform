@@ -173,7 +173,20 @@ export const trackRoute = createRoute({
   },
 })
 
-export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, settingsRoute, cartRoute, trackRoute])
+export const wishlistAliasRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/wishlist',
+  component: UserWishlistComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+      })
+    }
+  },
+})
+
+export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, wishlistAliasRoute, settingsRoute, cartRoute, trackRoute])
 export const router = createRouter({ 
   routeTree,
   context: {

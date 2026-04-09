@@ -1,6 +1,8 @@
 import { Outlet, Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
+import { cartApi, wishlistApi } from '../lib/api'
 
 export function RootComponent() {
   const location = useLocation();
@@ -11,6 +13,19 @@ export function RootComponent() {
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const { data: cart } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => cartApi.getCart(),
+  });
+
+  const { data: wishlist } = useQuery({
+    queryKey: ['wishlist'],
+    queryFn: () => wishlistApi.getWishlist(),
+  });
+
+  const cartCount = cart?.items.reduce((acc, item) => acc + item.qty, 0) || 0;
+  const wishlistCount = wishlist?.products.length || 0;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -79,7 +94,22 @@ export function RootComponent() {
                 <div className="flex items-center gap-4">
                   <button onClick={() => setIsSearchActive(true)} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">search</button>
                   <Link to="/profile" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">person</Link>
-                  <Link to="/cart" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">shopping_bag</Link>
+                  <Link to="/wishlist" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="relative material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">
+                    favorite
+                    {wishlistCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+                  <Link to="/cart" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="relative material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">
+                    shopping_bag
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-secondary text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
                 </div>
               </motion.div>
             ) : (

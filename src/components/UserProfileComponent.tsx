@@ -25,6 +25,8 @@ export function UserProfileComponent() {
     } catch (e) {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
+      console.log(e);
+
     }
   };
 

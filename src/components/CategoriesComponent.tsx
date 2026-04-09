@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
-import { PRODUCTS } from '../data/products';
+import { useQuery } from '@tanstack/react-query';
+import { productApi } from '../lib/api';
 
 export function CategoriesComponent() {
   const [isInStock, setIsInStock] = useState(true);
@@ -11,6 +12,11 @@ export function CategoriesComponent() {
   const [selectedSort, setSelectedSort] = useState('Recommended');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: allProducts, isLoading } = useQuery({
+    queryKey: ['products', selectedCategory],
+    queryFn: () => productApi.getProducts(selectedCategory === 'All Objects' ? undefined : selectedCategory),
+  });
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -31,6 +37,19 @@ export function CategoriesComponent() {
     { name: 'Price: High to Low', icon: 'arrow_downward' }
   ];
 
+  const filteredProducts = (allProducts || [])
+    .filter(p => {
+      const stockMatch = !isInStock || p.inStock;
+      const priceMatch = p.price >= minPrice && p.price <= maxPrice;
+      return stockMatch && priceMatch;
+    })
+    .sort((a, b) => {
+      if (selectedSort === 'Price: Low to High') return a.price - b.price;
+      if (selectedSort === 'Price: High to Low') return b.price - a.price;
+      if (selectedSort === 'Newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return 0; // Recommended/Default
+    });
+
   const getLayoutClasses = (index: number) => {
     const mod = index % 4;
     if (mod === 0) return { col: 'lg:col-span-8', wrapper: '', aspect: 'aspect-16/10' };
@@ -43,6 +62,7 @@ export function CategoriesComponent() {
   const MAX_PRICE_LIMIT = 5000;
   const minPricePercent = (minPrice / MAX_PRICE_LIMIT) * 100;
   const maxPricePercent = (maxPrice / MAX_PRICE_LIMIT) * 100;
+
   return (
     <div className="w-full">
       {/* Hero Title */}
@@ -77,7 +97,7 @@ export function CategoriesComponent() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-full right-0 mt-2 w-56 bg-white border border-outline-variant/20 shadow-2xl z-50 flex flex-col origin-top"
+                className="absolute top-full right-0 mt-2 w-56 bg-white border border-outline-variant/20 shadow-2xl z-50 flex flex-col origin-top text-black"
               >
                 {SORT_OPTIONS.map((option) => (
                   <button
@@ -141,11 +161,11 @@ export function CategoriesComponent() {
                     value={minPrice} 
                     onChange={(e) => setMinPrice(Math.min(Number(e.target.value), maxPrice - 50))} 
                     className="absolute w-full appearance-none bg-transparent pointer-events-none z-20 
-                               [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full 
-                               [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-3 
-                               [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:bg-primary 
-                               [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+                                [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full 
+                                [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-3 
+                                [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:bg-primary 
+                                [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
                   />
                   <input 
                     type="range" 
@@ -154,11 +174,11 @@ export function CategoriesComponent() {
                     value={maxPrice} 
                     onChange={(e) => setMaxPrice(Math.max(Number(e.target.value), minPrice + 50))} 
                     className="absolute w-full appearance-none bg-transparent pointer-events-none z-20 
-                               [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full 
-                               [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-3 
-                               [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:bg-primary 
-                               [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+                                [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full 
+                                [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-3 
+                                [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:bg-primary 
+                                [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
                   />
                 </div>
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
@@ -187,49 +207,63 @@ export function CategoriesComponent() {
 
         {/* Product Grid: Asymmetric Layout */}
         <div className="flex-grow">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-24">
-            {PRODUCTS.map((product, index) => {
-              const layout = getLayoutClasses(index);
-              const mod = index % 4;
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-24">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className={`h-96 bg-surface-container-low animate-pulse lg:col-span-6`}></div>
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-40 text-center">
+              <span className="material-symbols-outlined text-6xl text-outline mb-6">inventory_2</span>
+              <h3 className="text-2xl font-bold tracking-tight mb-2">NO OBJECTS FOUND</h3>
+              <p className="text-on-surface-variant max-w-xs">Our curators are currently sourcing new pieces for this selection.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-24">
+              {filteredProducts.map((product, index) => {
+                const layout = getLayoutClasses(index);
+                const mod = index % 4;
 
-              return (
-                <Link to="/product/$productId" params={{ productId: product.id.toString() }} key={product.id} className={`${layout.col} group cursor-pointer block ${layout.wrapper}`}>
-                  <div className={`${layout.aspect} bg-surface-container-lowest overflow-hidden relative mb-6`}>
-                    <img 
-                      alt={product.title} 
-                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
-                      src={product.image}
-                    />
-                    {product.tag && (
-                      <div className="absolute top-6 right-6">
-                        <span className="bg-secondary text-white text-[10px] px-3 py-1 font-bold uppercase tracking-widest">{product.tag}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {mod === 2 ? (
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">{product.category}</p>
-                      <h2 className="text-lg font-bold tracking-tight mb-2">{product.title}</h2>
-                      <p className="text-lg font-light">{product.price}</p>
-                      <button className="bg-primary text-on-primary w-full py-4 mt-6 text-[10px] font-bold uppercase tracking-widest hover:bg-secondary transition-colors">Add to Bag</button>
+                return (
+                  <Link to="/product/$productId" params={{ productId: product._id }} key={product._id} className={`${layout.col} group cursor-pointer block ${layout.wrapper}`}>
+                    <div className={`${layout.aspect} bg-surface-container-lowest overflow-hidden relative mb-6`}>
+                      <img 
+                        alt={product.title} 
+                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
+                        src={product.image}
+                      />
+                      {product.tag && (
+                        <div className="absolute top-6 right-6">
+                          <span className="bg-secondary text-white text-[10px] px-3 py-1 font-bold uppercase tracking-widest">{product.tag}</span>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="flex justify-between items-start">
+                    
+                    {mod === 2 ? (
                       <div>
                         <p className="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">{product.category}</p>
-                        <h2 className={mod === 0 || mod === 3 ? "text-2xl font-bold tracking-tight" : "text-lg font-bold tracking-tight"}>{product.title}</h2>
+                        <h2 className="text-lg font-bold tracking-tight mb-2">{product.title}</h2>
+                        <p className="text-lg font-light">${product.price.toLocaleString()}</p>
+                        <button className="bg-primary text-on-primary w-full py-4 mt-6 text-[10px] font-bold uppercase tracking-widest hover:bg-secondary transition-colors">Add to Bag</button>
                       </div>
-                      <div className="text-right">
-                        <p className={mod === 0 || mod === 3 ? "text-xl font-light" : "text-lg font-light"}>{product.price}</p>
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-secondary mt-2 hover:underline">Quick Add</button>
+                    ) : (
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">{product.category}</p>
+                          <h2 className={mod === 0 || mod === 3 ? "text-2xl font-bold tracking-tight" : "text-lg font-bold tracking-tight"}>{product.title}</h2>
+                        </div>
+                        <div className="text-right">
+                          <p className={mod === 0 || mod === 3 ? "text-xl font-light" : "text-lg font-light"}>${product.price.toLocaleString()}</p>
+                          <button className="text-[10px] font-bold uppercase tracking-widest text-secondary mt-2 hover:underline">Quick Add</button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -241,11 +275,11 @@ export function CategoriesComponent() {
         </h2>
         <form className="w-full max-w-xl flex flex-col md:flex-row gap-0 border-b border-primary">
           <input 
-            className="bg-transparent border-none focus:ring-0 w-full py-6 text-[10px] font-bold uppercase tracking-widest outline-none shadow-none" 
+            className="bg-transparent border-none focus:ring-0 w-full py-6 text-[10px] font-bold uppercase tracking-widest outline-none shadow-none text-black" 
             placeholder="YOUR EMAIL ADDRESS" 
             type="email"
           />
-          <button className="py-6 px-12 text-[10px] font-bold uppercase tracking-widest hover:text-secondary transition-colors shrink-0">Subscribe</button>
+          <button className="py-6 px-12 text-[10px] font-bold uppercase tracking-widest hover:text-secondary transition-colors shrink-0 text-black">Subscribe</button>
         </form>
       </section>
     </div>
