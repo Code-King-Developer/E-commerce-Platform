@@ -94,7 +94,7 @@ export function RootComponent() {
                 <div className="flex items-center gap-4">
                   <button onClick={() => setIsSearchActive(true)} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">search</button>
                   <Link to="/profile" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">person</Link>
-                  <Link to="/wishlist" activeProps={{ className: "text-primary opacity-100 border-b-2 border-primary pb-1" }} className="relative material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">
+                  <Link to="/profile/wishlist" activeProps={{ className: "text-primary" }} className="relative material-symbols-outlined scale-95 active:duration-150 transition-colors hover:opacity-70">
                     favorite
                     {wishlistCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
