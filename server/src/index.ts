@@ -13,6 +13,7 @@ import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import wishlistRoutes from './routes/wishlistRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.json({ message: 'Welcome to the E-commerce API' });
