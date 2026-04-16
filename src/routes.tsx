@@ -13,8 +13,14 @@ import { UserWishlistComponent } from './components/UserWishlistComponent'
 import { UserSettingsComponent } from './components/UserSettingsComponent'
 import { ShoppingCartComponent } from './components/ShoppingCartComponent'
 import { TrackShipmentComponent } from './components/TrackShipmentComponent'
+import { AdminOverviewComponent } from './components/AdminOverviewComponent'
+import { AdminProductsComponent } from './components/AdminProductsComponent'
+import { AdminOrdersComponent } from './components/AdminOrdersComponent'
+import { AdminLoginComponent } from './components/AdminLoginComponent'
+
 export interface MyRouterContext {
   isAuthenticated: boolean;
+  isAdminAuthenticated: boolean;
 }
 
 export const rootRoute = createRootRouteWithContext<MyRouterContext>()({
@@ -186,11 +192,73 @@ export const wishlistAliasRoute = createRoute({
   },
 })
 
-export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, wishlistAliasRoute, settingsRoute, cartRoute, trackRoute])
+export const adminOverviewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/overview',
+  component: AdminOverviewComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAdminAuthenticated) {
+      throw redirect({
+        to: '/admin/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
+})
+
+export const adminLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/login',
+  component: AdminLoginComponent,
+  beforeLoad: ({ context }) => {
+    if (context.isAdminAuthenticated) {
+      throw redirect({
+        to: '/admin/overview',
+      })
+    }
+  },
+})
+
+export const adminProductsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/products',
+  component: AdminProductsComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAdminAuthenticated) {
+      throw redirect({
+        to: '/admin/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
+})
+
+export const adminOrdersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/orders',
+  component: AdminOrdersComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAdminAuthenticated) {
+      throw redirect({
+        to: '/admin/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
+})
+
+export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, wishlistAliasRoute, settingsRoute, cartRoute, trackRoute, adminOverviewRoute, adminProductsRoute, adminOrdersRoute, adminLoginRoute])
 export const router = createRouter({ 
   routeTree,
   context: {
     isAuthenticated: false,
+    isAdminAuthenticated: false,
   },
 })
 

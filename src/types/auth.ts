@@ -9,6 +9,19 @@ export interface User {
   updatedAt: string;
 }
 
+export interface AdminUser {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface AdminLoginPayload {
+  email: string;
+  password?: string;
+}
+
+
 export interface UpdateProfilePayload {
   name?: string;
   biography?: string;

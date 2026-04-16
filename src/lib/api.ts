@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { SendOtpPayload, VerifyOtpPayload, AuthResponse, User, UpdateProfilePayload } from '../types/auth';
+import type { SendOtpPayload, VerifyOtpPayload, AuthResponse, User, UpdateProfilePayload, AdminUser, AdminLoginPayload } from '../types/auth';
 import type { Order } from '../types/order';
 import type { Product } from '../types/product';
 import type { Cart, AddToCartPayload, UpdateCartItemPayload } from '../types/cart';
@@ -36,6 +36,22 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     await api.post('/auth/logout');
+  },
+};
+
+export const adminApi = {
+  loginAdmin: async (payload: AdminLoginPayload): Promise<AdminUser> => {
+    const { data } = await api.post<AdminUser>('/admin/login', payload);
+    return data;
+  },
+
+  getAdminProfile: async (): Promise<AdminUser> => {
+    const { data } = await api.get<AdminUser>('/admin/me');
+    return data;
+  },
+
+  logoutAdmin: async (): Promise<void> => {
+    await api.post('/admin/logout');
   },
 };
 
