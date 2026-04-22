@@ -36,3 +36,12 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateOrderPayload {
+  orderItems: OrderItem[];
+  shippingAddress: ShippingAddress;
+  paymentMethod: string;
+  taxPrice?: number;
+  shippingPrice?: number;
+  totalPrice: number;
+}

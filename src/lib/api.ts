@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { SendOtpPayload, VerifyOtpPayload, AuthResponse, User, UpdateProfilePayload, AdminUser, AdminLoginPayload } from '../types/auth';
-import type { Order } from '../types/order';
-import type { Product } from '../types/product';
+import type { Order, CreateOrderPayload } from '../types/order';
+import type { Product, CreateProductPayload } from '../types/product';
 import type { Cart, AddToCartPayload, UpdateCartItemPayload } from '../types/cart';
 import type { Wishlist, AddToWishlistPayload } from '../types/wishlist';
 
@@ -53,9 +53,19 @@ export const adminApi = {
   logoutAdmin: async (): Promise<void> => {
     await api.post('/admin/logout');
   },
+
+  getAdminStats: async (): Promise<{ totalRevenue: number, averageOrderValue: number, conversionRate: number, totalOrders: number, pendingFulfillment: number }> => {
+    const { data } = await api.get('/admin/stats');
+    return data;
+  },
 };
 
 export const orderApi = {
+  createOrder: async (payload: CreateOrderPayload): Promise<Order> => {
+    const { data } = await api.post<Order>('/orders', payload);
+    return data;
+  },
+
   getMyOrders: async (): Promise<Order[]> => {
     const { data } = await api.get<Order[]>('/orders/myorders');
     return data;
@@ -63,6 +73,16 @@ export const orderApi = {
 
   getOrderDetails: async (id: string): Promise<Order> => {
     const { data } = await api.get<Order>(`/orders/${id}`);
+    return data;
+  },
+
+  getAllOrders: async (): Promise<Order[]> => {
+    const { data } = await api.get<Order[]>('/orders');
+    return data;
+  },
+
+  deliverOrder: async (id: string): Promise<Order> => {
+    const { data } = await api.put<Order>(`/orders/${id}/deliver`);
     return data;
   },
 };
@@ -76,6 +96,11 @@ export const productApi = {
 
   getProductById: async (id: string): Promise<Product> => {
     const { data } = await api.get<Product>(`/products/${id}`);
+    return data;
+  },
+
+  createProduct: async (payload: CreateProductPayload): Promise<Product> => {
+    const { data } = await api.post<Product>('/products', payload);
     return data;
   },
 };

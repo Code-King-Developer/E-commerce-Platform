@@ -108,3 +108,33 @@ export const logoutAdmin = (req: Request, res: Response) => {
   });
   res.status(200).json({ message: 'Admin logged out successfully' });
 };
+
+// @desc    Get admin overview stats
+// @route   GET /api/admin/stats
+// @access  Private (Admin only)
+export const getAdminStats = async (req: Request, res: Response) => {
+  try {
+    const { default: Order } = await import('../models/Order.js');
+    const orders = await Order.find({});
+    
+    // Calculate GMV
+    const gmv = orders.reduce((acc, current) => acc + current.totalPrice, 0);
+    
+    // Average Order Value
+    const count = orders.length;
+    const aov = count > 0 ? gmv / count : 0;
+    
+    // Pending Orders count
+    const pendingOrders = orders.filter(o => !o.isDelivered).length;
+
+    res.json({
+      totalRevenue: gmv,
+      averageOrderValue: aov,
+      conversionRate: 4.2, // mock value since we don't have visitor tracking
+      totalOrders: count,
+      pendingFulfillment: pendingOrders,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};

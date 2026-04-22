@@ -175,7 +175,7 @@ export function UserOrdersComponent() {
                         </div>
                         <div className="flex items-center gap-8 self-stretch md:self-auto justify-between md:justify-end">
                           <span className="font-manrope text-2xl font-light tracking-tighter text-primary">${order.totalPrice.toLocaleString()}</span>
-                          <Link to="/track" className="bg-primary text-on-primary px-6 md:px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors whitespace-nowrap">
+                          <Link to="/track/$orderId" params={{ orderId: order._id }} className="bg-primary text-on-primary px-6 md:px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors whitespace-nowrap">
                             Order Details
                           </Link>
                         </div>

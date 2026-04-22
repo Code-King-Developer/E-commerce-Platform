@@ -12,6 +12,7 @@ import { UserOrdersComponent } from './components/UserOrdersComponent'
 import { UserWishlistComponent } from './components/UserWishlistComponent'
 import { UserSettingsComponent } from './components/UserSettingsComponent'
 import { ShoppingCartComponent } from './components/ShoppingCartComponent'
+import { CheckoutComponent } from './components/CheckoutComponent'
 import { TrackShipmentComponent } from './components/TrackShipmentComponent'
 import { AdminOverviewComponent } from './components/AdminOverviewComponent'
 import { AdminProductsComponent } from './components/AdminProductsComponent'
@@ -163,9 +164,25 @@ export const cartRoute = createRoute({
   },
 })
 
+export const checkoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/checkout',
+  component: CheckoutComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
+})
+
 export const trackRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/track',
+  path: '/track/$orderId',
   component: TrackShipmentComponent,
   beforeLoad: ({ context }) => {
     if (!context.isAuthenticated) {
@@ -253,7 +270,7 @@ export const adminOrdersRoute = createRoute({
   },
 })
 
-export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, wishlistAliasRoute, settingsRoute, cartRoute, trackRoute, adminOverviewRoute, adminProductsRoute, adminOrdersRoute, adminLoginRoute])
+export const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, categoriesRoute, editorialRoute, collectionsRoute, productDetailsRoute, profileRoute, ordersRoute, wishlistRoute, wishlistAliasRoute, settingsRoute, cartRoute, checkoutRoute, trackRoute, adminOverviewRoute, adminProductsRoute, adminOrdersRoute, adminLoginRoute])
 export const router = createRouter({ 
   routeTree,
   context: {

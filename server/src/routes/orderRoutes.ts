@@ -5,13 +5,16 @@ import {
   updateOrderToPaid,
   updateOrderToDelivered,
   getMyOrders,
+  getOrders,
 } from '../controllers/orderController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { adminProtect } from '../middleware/adminAuthMiddleware.js';
 
 const router = express.Router();
 
 router.route('/')
-  .post(protect, addOrderItems);
+  .post(protect, addOrderItems)
+  .get(adminProtect, getOrders);
 
 router.route('/myorders')
   .get(protect, getMyOrders);
@@ -23,6 +26,6 @@ router.route('/:id/pay')
   .put(protect, updateOrderToPaid);
 
 router.route('/:id/deliver')
-  .put(protect, updateOrderToDelivered);
+  .put(adminProtect, updateOrderToDelivered);
 
 export default router;

@@ -151,9 +151,9 @@ export function ShoppingCartComponent() {
                 <span className="text-4xl font-manrope font-black tracking-tighter text-primary">${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
-            <button className="w-full bg-primary text-on-primary py-6 px-8 font-black font-manrope uppercase tracking-widest text-sm hover:bg-neutral-800 transition-all active:scale-[0.98] duration-150 mb-6">
+            <Link to="/checkout" className="w-full bg-primary text-on-primary py-6 px-8 font-black font-manrope uppercase tracking-widest text-sm hover:bg-neutral-800 transition-all active:scale-[0.98] duration-150 mb-6 flex justify-center text-center">
               Proceed to Checkout
-            </button>
+            </Link>
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3 text-[10px] font-body uppercase tracking-widest font-bold text-on-surface-variant">
                 <span className="material-symbols-outlined text-xs">lock</span> 100% Secure Transaction

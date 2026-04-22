@@ -1,56 +1,63 @@
-import { Link } from '@tanstack/react-router'
+import { Link as RouterLink } from '@tanstack/react-router'
+import { useAdminOrders } from '../hooks/useAdminOrders'
+import { toast } from 'sonner';
 
 export function AdminOrdersComponent() {
+  const { data: orders, isLoading, deliverOrder, isDelivering } = useAdminOrders();
+
+  const handleDeliver = async (id: string) => {
+    try {
+      await deliverOrder(id);
+      toast.success('Order marked as delivered');
+    } catch {
+      toast.error('Failed to update order status');
+    }
+  };
   return (
     <div className="bg-background text-on-surface font-body min-h-screen">
       {/* SideNavBar Execution */}
-      <aside className="fixed inset-y-0 left-0 flex flex-col z-40 h-screen w-64 border-r border-transparent bg-slate-50 dark:bg-zinc-950 font-manrope tracking-tight font-medium text-sm">
+      <aside className="fixed inset-y-0 left-0 flex flex-col z-40 h-screen w-64 border-r border-transparent bg-slate-50 font-manrope tracking-tight font-medium text-sm">
         <div className="px-8 py-10">
-          <span className="font-manrope font-black text-2xl tracking-tighter text-black dark:text-white">CURATOR</span>
+          <span className="font-manrope font-black text-2xl tracking-tighter text-black">CURATOR</span>
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mt-1">Admin Terminal</p>
         </div>
-        <nav className="flex-1 space-y-1">
-          <Link className="flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" to="/admin/overview">
+        <nav className="flex-1 px-4 space-y-1">
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" to="/admin/overview">
             <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
             <span>Overview</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" to="/admin/products">
+          </RouterLink>
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" to="/admin/products">
             <span className="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
             <span>Products</span>
-          </Link>
+          </RouterLink>
           {/* Active State Logic: Orders is active */}
-          <Link className="flex items-center gap-3 px-8 py-3 text-black dark:text-white font-bold border-l-2 border-blue-600 dark:border-blue-500 bg-slate-100 dark:bg-zinc-900" to="/admin/orders">
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-black font-bold border-l-2 border-blue-600 bg-slate-100" to="/admin/orders">
             <span className="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
             <span>Orders</span>
-          </Link>
-          <a className="flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+          </RouterLink>
+          <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" href="#">
             <span className="material-symbols-outlined" data-icon="group">group</span>
             <span>Customers</span>
           </a>
-          <a className="flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+          <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" href="#">
             <span className="material-symbols-outlined" data-icon="edit_note">edit_note</span>
             <span>Content</span>
           </a>
-          <a className="flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+          <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" href="#">
             <span className="material-symbols-outlined" data-icon="analytics">analytics</span>
             <span>Analytics</span>
           </a>
-          <a className="mt-auto flex items-center gap-3 px-8 py-3 text-zinc-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+        </nav>
+        <div className="p-4 border-t border-transparent">
+          <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" href="#">
             <span className="material-symbols-outlined" data-icon="settings">settings</span>
             <span>Settings</span>
           </a>
-        </nav>
-        <div className="p-8 border-t border-slate-100 dark:border-zinc-900 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-[10px] text-white">AC</div>
-          <div className="overflow-hidden">
-            <p className="text-xs font-bold truncate">Admin user profile</p>
-            <p className="text-[10px] text-zinc-400">Chief Curator</p>
-          </div>
         </div>
       </aside>
 
       {/* TopNavBar Execution */}
-      <header className="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-8 z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-transparent">
+      <header className="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-8 z-30 bg-white/80 backdrop-blur-xl border-b border-transparent">
         <div className="flex items-center gap-4 flex-1">
           <div className="relative w-full max-w-md focus-within:ring-1 focus-within:ring-zinc-200 transition-all">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-lg" data-icon="search">search</span>
@@ -66,7 +73,7 @@ export function AdminOrdersComponent() {
               <span className="material-symbols-outlined" data-icon="help_outline">help_outline</span>
             </button>
           </div>
-          <span className="font-manrope font-black text-lg text-black dark:text-white tracking-tighter">THE DIGITAL CURATOR</span>
+          <span className="font-manrope font-black text-lg text-black tracking-tighter">THE DIGITAL CURATOR</span>
         </div>
       </header>
 
@@ -143,125 +150,54 @@ export function AdminOrdersComponent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-container">
-                  {/* Row 1: Placed */}
-                  <tr className="group hover:bg-surface-container-low transition-colors">
-                    <td className="px-8 py-10">
-                      <p className="text-xs font-bold">#ORD-99210</p>
-                      <p className="text-[10px] text-zinc-400 mt-1">OCT 24, 2023</p>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-zinc-400" data-icon="person">person</span>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={5} className="px-8 py-10 text-center text-zinc-400 text-xs">
+                        Loading orders...
+                      </td>
+                    </tr>
+                  ) : orders?.map((order) => (
+                    <tr key={order._id} className="group hover:bg-surface-container-low transition-colors">
+                      <td className="px-8 py-10">
+                        <p className="text-xs font-bold truncate max-w-[120px]">#{order._id}</p>
+                        <p className="text-[10px] text-zinc-400 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      </td>
+                      <td className="px-8 py-10">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-zinc-400" data-icon="person">person</span>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold">{(order.user as { name?: string })?.name || 'Guest'}</p>
+                            <p className="text-[10px] text-zinc-400">{(order.user as { email?: string })?.email || 'N/A'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-xs font-bold">Julianne Vough</p>
-                          <p className="text-[10px] text-zinc-400">julianne@vough.design</p>
+                      </td>
+                      <td className="px-8 py-10">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full ${order.isDelivered ? 'bg-zinc-300' : order.isPaid ? 'bg-green-500' : 'bg-secondary'}`}></span>
+                          <span className={`text-[10px] font-bold uppercase tracking-widest ${order.isDelivered ? 'text-zinc-400' : order.isPaid ? 'text-green-600' : 'text-secondary'}`}>
+                            {order.isDelivered ? 'Delivered' : order.isPaid ? 'Paid' : 'Placed'}
+                          </span>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Placed</span>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10 font-bold text-xs">$1,240.00</td>
-                    <td className="px-8 py-10 text-right">
-                      <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-secondary hover:underline">Fulfill</button>
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-black hover:underline">Contact</button>
-                      </div>
-                    </td>
-                  </tr>
-                  {/* Row 2: Paid */}
-                  <tr className="group hover:bg-surface-container-low transition-colors">
-                    <td className="px-8 py-10">
-                      <p className="text-xs font-bold">#ORD-99209</p>
-                      <p className="text-[10px] text-zinc-400 mt-1">OCT 24, 2023</p>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-3">
-                        <img alt="Customer avatar" className="w-10 h-10 object-cover" data-alt="studio portrait of middle-aged man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApTVMOj01VewdpStYaCLapfmg-1KzMt_7_kAg8MW4YwiCOJLCtl4_RgGcdnsAugh4Nezt_bya6KKxe3U9ImiCKh06ZY6oIwVe4zARK-8Qt3HiwzC9XdQXvq4xBz3kSlBi_N3P950daek4donERPxq-6umz4fdS0HhEXdEvVWhs6vIvqVm15SIsRa5xZFDPzq7Wj2T4qCJ11yyAkRVdYC4_UXts51Q81wfIIMT4AayyltUMsLgtePKGJWW64XLiv3eX_ygd6wbNozGU"/>
-                        <div>
-                          <p className="text-xs font-bold">Marcus Thorne</p>
-                          <p className="text-[10px] text-zinc-400">m.thorne@atlier.co</p>
+                      </td>
+                      <td className="px-8 py-10 font-bold text-xs">${order.totalPrice.toFixed(2)}</td>
+                      <td className="px-8 py-10 text-right">
+                        <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {!order.isDelivered && order.isPaid && (
+                            <button
+                              onClick={() => handleDeliver(order._id!)}
+                              disabled={isDelivering}
+                              className="text-[10px] font-bold uppercase tracking-widest text-secondary hover:underline disabled:opacity-50"
+                            >
+                              Fulfill
+                            </button>
+                          )}
+                          <button className="text-[10px] font-bold uppercase tracking-widest text-black hover:underline">Contact</button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-green-600">Paid</span>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10 font-bold text-xs">$3,100.50</td>
-                    <td className="px-8 py-10 text-right">
-                      <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-secondary hover:underline">Fulfill</button>
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-black hover:underline">Contact</button>
-                      </div>
-                    </td>
-                  </tr>
-                  {/* Row 3: Shipped */}
-                  <tr className="group hover:bg-surface-container-low transition-colors">
-                    <td className="px-8 py-10">
-                      <p className="text-xs font-bold">#ORD-99208</p>
-                      <p className="text-[10px] text-zinc-400 mt-1">OCT 23, 2023</p>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-zinc-400" data-icon="person">person</span>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold">Elena Rossi</p>
-                          <p className="text-[10px] text-zinc-400">e.rossi@milan.it</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600">Shipped</span>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10 font-bold text-xs">$890.00</td>
-                    <td className="px-8 py-10 text-right">
-                      <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-secondary hover:underline">Track</button>
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-black hover:underline">Contact</button>
-                      </div>
-                    </td>
-                  </tr>
-                  {/* Row 4: Delivered */}
-                  <tr className="group hover:bg-surface-container-low transition-colors">
-                    <td className="px-8 py-10">
-                      <p className="text-xs font-bold">#ORD-99207</p>
-                      <p className="text-[10px] text-zinc-400 mt-1">OCT 22, 2023</p>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-3">
-                        <img alt="Customer avatar" className="w-10 h-10 object-cover" data-alt="portrait of a young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxIgEnB28D0hIfDLAsIUe149bmYbjImr65MnXOpjr5e4OX25oBpgrTrOGJXu6vaGqz8VpIOejRO38Cq5qz7-cKuEK86CmbEuNNZbRg-vIlICJgRxZGC9jKDTQsqLGIqznlEBgWp1OAofP6OvJAK3YsxClDNiSNxGz22pDBKAf91qgh2TJdz2FfSv_zabyPA-IQrusTYLbF48iTmewZxG-yWxp0fEbIV9klhMIkNSSuNbqCo8bm9ivR5aYljjUUEdhpqVL4QaDfGGhV"/>
-                        <div>
-                          <p className="text-xs font-bold">Sarah Jenkins</p>
-                          <p className="text-[10px] text-zinc-400">s.jenkins@gmail.com</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Delivered</span>
-                      </div>
-                    </td>
-                    <td className="px-8 py-10 font-bold text-xs">$520.00</td>
-                    <td className="px-8 py-10 text-right">
-                      <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-[10px] font-bold uppercase tracking-widest text-black hover:underline">View Archive</button>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

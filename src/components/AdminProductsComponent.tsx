@@ -1,6 +1,11 @@
-import { Link } from '@tanstack/react-router'
+import { useState } from 'react';
+import { Link as RouterLink } from '@tanstack/react-router';
+import { useAdminProducts } from '../hooks/useAdminProducts';
+import { AdminAddProductModal } from './AdminAddProductModal';
 
 export function AdminProductsComponent() {
+  const { data: products, isLoading } = useAdminProducts();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   return (
     <div className="bg-background text-on-surface font-body min-h-screen">
       {/* SideNavBar */}
@@ -10,18 +15,18 @@ export function AdminProductsComponent() {
           <p className="text-[10px] tracking-[0.2em] font-manrope font-medium text-zinc-400 mt-1 uppercase">Admin Terminal</p>
         </div>
         <nav className="flex-1 px-4 space-y-1">
-          <Link to="/admin/overview" className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200 group">
+          <RouterLink to="/admin/overview" className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200 group">
             <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
             <span className="font-manrope tracking-tight font-medium text-sm">Overview</span>
-          </Link>
-          <Link to="/admin/products" className="flex items-center gap-3 px-4 py-3 text-black font-bold border-l-2 border-blue-600 bg-slate-100 group">
+          </RouterLink>
+          <RouterLink to="/admin/products" className="flex items-center gap-3 px-4 py-3 text-black font-bold border-l-2 border-blue-600 bg-slate-100 group">
             <span className="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
             <span className="font-manrope tracking-tight font-medium text-sm">Products</span>
-          </Link>
-          <Link to="/admin/orders" className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200 group">
+          </RouterLink>
+          <RouterLink to="/admin/orders" className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200 group">
             <span className="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
             <span className="font-manrope tracking-tight font-medium text-sm">Orders</span>
-          </Link>
+          </RouterLink>
           <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200 group" href="#">
             <span className="material-symbols-outlined" data-icon="group">group</span>
             <span className="font-manrope tracking-tight font-medium text-sm">Customers</span>
@@ -82,7 +87,10 @@ export function AdminProductsComponent() {
               <h3 className="font-headline text-5xl font-extrabold tracking-tighter text-primary leading-none">Inventory Control</h3>
               <p className="mt-6 text-on-surface-variant font-body leading-relaxed max-w-md">Refine the collection. Manage stock levels, curation status, and market positioning for the seasonal rotation.</p>
             </div>
-            <button className="bg-primary text-on-primary px-8 py-4 flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-primary text-on-primary px-8 py-4 flex items-center gap-3 hover:opacity-90 transition-opacity"
+            >
               <span className="material-symbols-outlined" data-icon="add">add</span>
               <span className="font-manrope font-bold text-xs uppercase tracking-widest">New Product</span>
             </button>
@@ -134,105 +142,37 @@ export function AdminProductsComponent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">
-                {/* Product 1 */}
-                <tr className="hover:bg-surface-container-low transition-colors group">
-                  <td className="py-6 px-6">
-                    <div className="h-20 w-16 bg-surface-container overflow-hidden">
-                      <img alt="Carrara Marble Chair" className="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Minimalist white marble chair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs0enbLM2bW1jp9DaaQnVm1_qiBLuosaySb7J_AtzTWfwibNOwC4dLtr9QCwZPJILINcQZooow9xofJxFJ7MAf7utXDrpuV0__siBBe0-bw3PSUDlN-IpLOPprFRpArm8hmwvQselulETnpefn_DszfS8wK67r4bw7c70vJbuiU-ly6j34E9c-2A12gYVNO5sPsk-PF39qZtXW00JmjNVZRiVmOw9wVG3f-e_ADApDL9iDD3yYy9YVP9xnqkGvjxbX8n3sgHJCmuDO"/>
-                    </div>
-                  </td>
-                  <td className="py-6 px-6">
-                    <p className="font-manrope font-bold text-sm tracking-tight">Carrara Marble Study Chair</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Interior / Seating</p>
-                  </td>
-                  <td className="py-6 px-6 font-mono text-[10px] text-zinc-400">CH-MARB-001</td>
-                  <td className="py-6 px-6 text-right font-manrope font-bold text-sm">$2,450.00</td>
-                  <td className="py-6 px-6 text-center">
-                    <div className="inline-flex items-center justify-center px-3 py-1 bg-surface-container text-[10px] font-bold tracking-widest uppercase">
-                      12 Units
-                    </div>
-                  </td>
-                  <td className="py-6 px-6 text-right">
-                    <button className="text-zinc-300 hover:text-black transition-colors">
-                      <span className="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Product 2 (Low Stock) */}
-                <tr className="hover:bg-surface-container-low transition-colors group">
-                  <td className="py-6 px-6">
-                    <div className="h-20 w-16 bg-surface-container overflow-hidden">
-                      <img alt="Aura Table Lamp" className="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Modernist geometric table lamp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtekHyPjVuEfDRrCa18ApB1uvZQbkEUSh9X1MJ_NR0NnAKpglsGU0-L030W7KoaHFDXiJ0LUs1ETKZFrFi0QMj9J7gtvsVkror_jnaROJ2_Jk19HjNWWw8ifx4zArl9iEmtRF1hL51hIvkfGtxXPImcGw9JLt9-wpfv_8Q0Uuo1m9VC2xv_wYvgf6yVlkq3Upo5ABJmwHpcq5Cpb7gJmdDJdr-am3obZGsu3St0BwlOCQu69D99KSN1B8gP2Rog5K-uD7VuWU8EnRS"/>
-                    </div>
-                  </td>
-                  <td className="py-6 px-6">
-                    <p className="font-manrope font-bold text-sm tracking-tight">Aura Brass Table Lamp</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Lighting / Table</p>
-                  </td>
-                  <td className="py-6 px-6 font-mono text-[10px] text-zinc-400">LT-AURA-99</td>
-                  <td className="py-6 px-6 text-right font-manrope font-bold text-sm">$890.00</td>
-                  <td className="py-6 px-6 text-center">
-                    <div className="inline-flex flex-col items-center gap-1">
-                      <div className="px-3 py-1 bg-error-container text-error text-[10px] font-bold tracking-widest uppercase">
-                        2 Units Left
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={6} className="py-6 px-6 text-center text-zinc-400 text-xs">
+                      Loading products...
+                    </td>
+                  </tr>
+                ) : products?.map((product) => (
+                  <tr key={product._id} className="hover:bg-surface-container-low transition-colors group">
+                    <td className="py-6 px-6">
+                      <div className="h-20 w-16 bg-surface-container overflow-hidden">
+                        <img alt={product.title} className="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src={product.image} />
                       </div>
-                      <span className="text-[9px] text-error font-bold uppercase tracking-tighter">Critically Low</span>
-                    </div>
-                  </td>
-                  <td className="py-6 px-6 text-right">
-                    <button className="text-zinc-300 hover:text-black transition-colors">
-                      <span className="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Product 3 */}
-                <tr className="hover:bg-surface-container-low transition-colors group">
-                  <td className="py-6 px-6">
-                    <div className="h-20 w-16 bg-surface-container overflow-hidden">
-                      <img alt="Lunar Ceramic Vessel" className="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Handcrafted textured ceramic vase" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSdzuZoZWqaQmd3nf0bfqTdm7V7wlFvGv2p2NmX1PoQT9KCxSlclm0Sq2dD0mETY-TVwpOl-q3ay_hF-x9vdBvZsXX6xrqURXP9VVYF_NVpPLZLVeSJWlifQgcGYjMSmHDWWa5nXOpYW4yWWqq_D-kUkM_6vNok7gLACPgZYFKAgCmKDeK4QxU7NKXSo3JN0oMdo4DI3AhZtC3S2DJN6iCHn8Hy0TJ9K6Znm49i8OnvIhKiQSUCGpwbDvIlcxA4BGPaYvP6jGwjMS7"/>
-                    </div>
-                  </td>
-                  <td className="py-6 px-6">
-                    <p className="font-manrope font-bold text-sm tracking-tight">Lunar Ceramic Vessel No. 4</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Decor / Ceramics</p>
-                  </td>
-                  <td className="py-6 px-6 font-mono text-[10px] text-zinc-400">DC-LUN-04</td>
-                  <td className="py-6 px-6 text-right font-manrope font-bold text-sm">$420.00</td>
-                  <td className="py-6 px-6 text-center">
-                    <div className="inline-flex items-center justify-center px-3 py-1 bg-surface-container text-[10px] font-bold tracking-widest uppercase">
-                      48 Units
-                    </div>
-                  </td>
-                  <td className="py-6 px-6 text-right">
-                    <button className="text-zinc-300 hover:text-black transition-colors">
-                      <span className="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Product 4 */}
-                <tr className="hover:bg-surface-container-low transition-colors group">
-                  <td className="py-6 px-6">
-                    <div className="h-20 w-16 bg-surface-container overflow-hidden">
-                      <img alt="Noir Oak Table" className="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Minimalist dark oak dining table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByircYJJs5Z9wL1MrQ2h9LTj86II9ugsvmcIQ34HObp4cesbpcc54Kj_XaUJfXZOXTR9aO3iyKe0wcIVYXiSAFACjsZGRKwrzOl7Ceb_6SO4A5lG9im9ju39oHzi1s0jT9jKHPBrpKeCOAcYB0h3C4t4UNWVHF5w9mBPBs7tXjp7BWFhtT-qsMfXEKIUfU3kJpjbdrTFM3F8c8ZCH09KoRgPH_CsWrXUEQArrFpQkitaZ384P0LCE17r4qKAGMlHzKcYHyhZeLVK55"/>
-                    </div>
-                  </td>
-                  <td className="py-6 px-6">
-                    <p className="font-manrope font-bold text-sm tracking-tight">Noir Solid Oak Dining Table</p>
-                    <p className="text-xs text-on-surface-variant mt-1">Furniture / Tables</p>
-                  </td>
-                  <td className="py-6 px-6 font-mono text-[10px] text-zinc-400">FN-OAK-600</td>
-                  <td className="py-6 px-6 text-right font-manrope font-bold text-sm">$4,800.00</td>
-                  <td className="py-6 px-6 text-center">
-                    <div className="inline-flex items-center justify-center px-3 py-1 bg-surface-container text-[10px] font-bold tracking-widest uppercase">
-                      5 Units
-                    </div>
-                  </td>
-                  <td className="py-6 px-6 text-right">
-                    <button className="text-zinc-300 hover:text-black transition-colors">
-                      <span className="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="py-6 px-6">
+                      <p className="font-manrope font-bold text-sm tracking-tight">{product.title}</p>
+                      <p className="text-xs text-on-surface-variant mt-1">{product.category}</p>
+                    </td>
+                    <td className="py-6 px-6 font-mono text-[10px] text-zinc-400">SKU - {product._id?.substring(0, 8)}</td>
+                    <td className="py-6 px-6 text-right font-manrope font-bold text-sm">${product.price.toFixed(2)}</td>
+                    <td className="py-6 px-6 text-center">
+                      <div className="inline-flex items-center justify-center px-3 py-1 bg-surface-container text-[10px] font-bold tracking-widest uppercase">
+                        {product.inventory} Units
+                      </div>
+                    </td>
+                    <td className="py-6 px-6 text-right">
+                      <button className="text-zinc-300 hover:text-black transition-colors">
+                        <span className="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -284,6 +224,11 @@ export function AdminProductsComponent() {
           Generate Report
         </button>
       </section>
+
+      <AdminAddProductModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </div>
   )
 }

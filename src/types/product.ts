@@ -12,6 +12,7 @@ export interface Product {
   category: string;
   image: string;
   images: string[];
+  alt?: string;
   inStock: boolean;
   inventory: number;
   featured: boolean;
@@ -23,3 +24,8 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CreateProductPayload = Omit<Product, '_id' | 'createdAt' | 'updatedAt' | 'inventory' | 'featured'> & {
+  inventory?: number;
+  featured?: boolean;
+};

@@ -1,7 +1,9 @@
 
-import { Link } from '@tanstack/react-router'
+import { Link as RouterLink } from '@tanstack/react-router';
+import { useAdminMetrics } from '../hooks/useAdminMetrics';
 
 export function AdminOverviewComponent() {
+  const { data: stats, isLoading } = useAdminMetrics();
   return (
     <div className="bg-background text-on-surface font-body min-h-screen">
       {/* SideNavBar */}
@@ -12,18 +14,18 @@ export function AdminOverviewComponent() {
         </div>
         <nav className="flex-1 px-4 space-y-1">
           {/* Overview Tab (Active) */}
-          <Link className="flex items-center gap-3 px-4 py-3 text-black font-bold border-l-2 border-blue-600 bg-slate-100 transition-colors duration-200" to="/admin/overview">
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-black font-bold border-l-2 border-blue-600 bg-slate-100 transition-colors duration-200" to="/admin/overview">
             <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
             <span>Overview</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 :bg-zinc-900 transition-colors duration-200" to="/admin/products">
+          </RouterLink>
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" to="/admin/products">
             <span className="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
             <span>Products</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 :bg-zinc-900 transition-colors duration-200" to="/admin/orders">
+          </RouterLink>
+          <RouterLink className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 transition-colors duration-200" to="/admin/orders">
             <span className="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
             <span>Orders</span>
-          </Link>
+          </RouterLink>
           <a className="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-slate-100 :bg-zinc-900 transition-colors duration-200" href="#">
             <span className="material-symbols-outlined" data-icon="group">group</span>
             <span>Customers</span>
@@ -90,7 +92,9 @@ export function AdminOverviewComponent() {
                 <span className="material-symbols-outlined text-secondary text-lg" data-icon="trending_up">trending_up</span>
               </div>
               <div>
-                <div className="text-4xl font-extrabold tracking-tighter">$142,850</div>
+                <div className="text-4xl font-extrabold tracking-tighter">
+                  {isLoading ? '...' : `$${stats?.totalRevenue?.toLocaleString() ?? '0.00'}`}
+                </div>
                 <div className="text-[11px] text-secondary font-bold mt-1">+12.4% <span className="text-zinc-400 font-normal">vs last month</span></div>
               </div>
             </div>
@@ -100,8 +104,10 @@ export function AdminOverviewComponent() {
                 <span className="material-symbols-outlined text-zinc-400 text-lg" data-icon="payments">payments</span>
               </div>
               <div>
-                <div className="text-4xl font-extrabold tracking-tighter">$412.00</div>
-                <div className="text-[11px] text-zinc-400 mt-1">Consistent performance</div>
+                <div className="text-4xl font-extrabold tracking-tighter">
+                  {isLoading ? '...' : `$${stats?.averageOrderValue?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'}`}
+                </div>
+                <div className="text-[11px] text-zinc-400 mt-1">Consistent performance based on {stats?.totalOrders ?? 0} orders</div>
               </div>
             </div>
             <div className="bg-surface-container-lowest p-8 flex flex-col justify-between h-48 border border-outline-variant/10 hover:bg-surface-container-low transition-colors group">
@@ -110,7 +116,9 @@ export function AdminOverviewComponent() {
                 <span className="material-symbols-outlined text-zinc-400 text-lg" data-icon="ads_click">ads_click</span>
               </div>
               <div>
-                <div className="text-4xl font-extrabold tracking-tighter">4.2%</div>
+                <div className="text-4xl font-extrabold tracking-tighter">
+                  {isLoading ? '...' : `${stats?.conversionRate ?? 0}%`}
+                </div>
                 <div className="text-[11px] text-error font-bold mt-1">-0.8% <span className="text-zinc-400 font-normal">from peak period</span></div>
               </div>
             </div>
